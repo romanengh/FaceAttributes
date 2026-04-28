@@ -30,45 +30,37 @@ The system uses a Deep Learning approach combining a ResNet-50 backbone for imag
 
 ##### **Project Structure**
 
-Demo\_App/
+FaceAttributes/`
 
 │
 
-├── app.py                   # Main Flask Backend (Server \& Logic)
+├── codes/                   # Training scripts \& original model files (.py, .pt, .pth)
+
+├── Demo\_App/                # Functional Web Application
+
+│   ├──app.py                # Flask Backend 
+
+│   ├──templates/
+
+│      └──index.html         # Frontend Interface (HTML + JS)
+
+│   ├──static/
+
+│      └── css/
+
+│          └── style.css     # Styling (Pink theme, Responsive)
+
+│   ├──model/                # Model Weights \& Data Lists
+
+│   ├──images/               # Images on the website home page
+
+├── corrupted\_images/        # Log/folder for excluded images
 
 ├── README.md                # This file
 
-│
+└──.gitignore                # Files excluded from GitHub (Dataset \& Weights)
 
-├── templates/
 
-│   └── index.html           # Frontend Interface (HTML + JS)
-
-│
-
-├── static/
-
-│   └── css/
-
-│       └── style.css        # Styling (Pink theme, Responsive)
-
-│
-
-├── model/                   # Model Weights \& Data Lists
-
-│   ├── embeddings\_resnet50.pt  # Pre-computed vectors for 202k images
-
-│   ├── celeba\_attributes.pt    # Ground Truth attributes (Tensor)
-
-│   ├── celeba\_image\_names.pt   # Ordered list of filenames
-
-│   ├── mlp\_turbo.pth           # Trained Attribute Encoder (Weights)
-
-│   └── resnet\_turbo.pth        # Trained Image Head (Weights)
-
-│
-
-└── img\_align\_celeba/        # (OPTIONAL LOCATION) Dataset containing images
 
 
 
@@ -128,7 +120,7 @@ Note: These files must match the architecture defined in the app.py script.
 
 1. Open a terminal or command prompt in the project folder.
 2. Run the Flask application with the following command:
-   python app.py
+python app.py
 3. Wait for the data loading message ("Chargement...").
 4. Once the server is ready, open your web browser and navigate to:
 
@@ -151,3 +143,4 @@ http://127.0.0.1:5000/
 
 * **Model Accuracy:** The model is not perfect and may make mistakes on certain queries.
 * **Educational Purpose:** This project uses the CelebA dataset for educational and demonstration purposes.
+
