@@ -1,0 +1,6 @@
+img_align_celeba/
+*.pt
+*.pth
+__pycache__/
+.venv/
+.DS_Store

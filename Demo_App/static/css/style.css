@@ -1,0 +1,190 @@
+/* --- GLOBAL --- */
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: #ffffff;
+    margin: 0; padding: 0; color: #333;
+}
+
+/* --- BANNIÈRE (Texte Blanc) --- */
+.top-banner {
+    background-color: #ffcce0; 
+    padding: 20px 40px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    flex-wrap: wrap; 
+    gap: 10px;
+}
+
+.banner-title { 
+    font-size: 26px; font-weight: bold; letter-spacing: 0.5px; 
+    white-space: nowrap;
+    color: #ffffff; /* BLANC */
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Légère ombre pour lisibilité */
+}
+
+.banner-names { 
+    font-size: 15px; font-weight: bold; /* GRAS */
+    color: #ffffff; /* BLANC */
+    text-align: right;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .top-banner { flex-direction: column; text-align: center; }
+    .banner-names { text-align: center; }
+}
+
+/* --- INTRO & TEXTE --- */
+.main-content {
+    padding: 0 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Boite d'intro (Couleur titre changée) */
+.intro-box {
+    background: #fdf2f8; 
+    border-left: 5px solid #ffcce0;
+    padding: 20px;
+    margin: 30px 0;
+    border-radius: 4px;
+    color: #444;
+    line-height: 1.6;
+}
+/* On enlève le bordeaux, on met un gris foncé ou un rose profond */
+.intro-box h2 { margin-top: 0; color: #333; font-size: 1.5em; }
+
+.section-title {
+    font-size: 22px; font-weight: bold;
+    margin: 30px 0 20px 0;
+    padding-bottom: 10px; border-bottom: 2px solid #ffcce0; display: inline-block;
+}
+
+/* --- GALERIE --- */
+.gallery {
+    display: flex; flex-wrap: wrap; gap: 15px; 
+    justify-content: flex-start;
+    margin-bottom: 40px;
+}
+
+.photo {
+    width: 125px; 
+    background: white; border: 1px solid #eee; border-radius: 8px;
+    padding: 6px; text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s;
+    flex-shrink: 0;
+}
+.photo:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); border-color: #ffcce0; }
+
+.photo img {
+    width: 100%; height: 125px; object-fit: cover;
+    border-radius: 6px; margin-bottom: 5px;
+}
+
+.attr {
+    font-size: 10px; color: #444; line-height: 1.2;
+    min-height: 30px; display: flex; align-items: center; justify-content: center;
+    overflow: hidden; text-overflow: ellipsis;
+}
+
+.attr-detail {
+    font-size: 11px; line-height: 1.3; margin-top: 5px;
+}
+
+/* --- QUERY HEADER --- */
+.query-header {
+    font-size: 20px; font-weight: bold; margin: 20px 0; color: #333;
+}
+
+/* --- DISCLAIMER BOX --- */
+.disclaimer-box {
+    margin-bottom: 30px; /* Espace avant la grille */
+    padding: 20px;
+    border: 2px dashed #ffcce0;
+    border-radius: 10px;
+    background-color: #fff0f6;
+}
+
+.disclaimer-box h3 {
+    color: #e64980; /* Rose vif (même que boutons) */
+    margin-top: 0;
+    text-align: center;
+    font-weight: 800;
+}
+
+ul.pink-stars {
+    list-style: none; padding-left: 10px; margin: 0;
+}
+
+ul.pink-stars li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+    color: #555;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+ul.pink-stars li::before {
+    content: "★"; 
+    color: #e64980; 
+    font-size: 1.2em;
+    position: absolute; left: 0; top: -2px;
+}
+
+.back-btn {
+    background: #e9ecef; border:none; padding:10px 20px; 
+    cursor:pointer; border-radius:4px; font-weight:bold; color:#555;
+    transition: 0.2s;
+}
+.back-btn:hover { background: #dee2e6; }
+
+
+/* --- PANNEAU DE CONTRÔLE --- */
+.control-panel {
+    background-color: #f8f9fa; 
+    border-top: 1px solid #eee;
+    padding: 30px 40px 50px 40px;
+    margin-top: 20px;
+}
+
+.attributes-grid {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    max-width: 1000px; margin: 0 auto;
+}
+
+.attr-tag {
+    background: white; border: 1px solid #ddd;
+    padding: 8px 14px; border-radius: 20px;
+    cursor: pointer; font-size: 13px; user-select: none; transition: 0.2s;
+}
+.attr-tag:hover { border-color: #e64980; color: #e64980; }
+
+.attr-tag.active {
+    background-color: #e64980; color: white; border-color: #e64980;
+    transform: scale(1.05); box-shadow: 0 2px 6px rgba(230, 73, 128, 0.3);
+}
+
+/* BOUTON SEARCH ROSE */
+#search-btn {
+    background-color: #e64980; /* ROSE */
+    color: white; border: none;
+    padding: 12px 30px; font-size: 15px; font-weight: bold;
+    border-radius: 6px; cursor: pointer; transition: 0.2s;
+    text-transform: uppercase; letter-spacing: 0.5px;
+}
+#search-btn:hover { 
+    background-color: #c2255c; /* Rose plus foncé au survol */
+    transform: scale(1.02); 
+}
+
+#error-msg { color: red; margin-top: 10px; font-weight: bold; font-size: 14px; display: none; }
+
+/* Adaptation Mobile */
+@media (max-width: 600px) {
+    .control-panel, .main-content { padding: 15px; }
+    .photo { width: 100px; } 
+    .photo img { height: 100px; }
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Attributes Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="top-banner">
+        <div class="banner-title">Face Attributes</div>
+        <div class="banner-names">Romane NGOUAH, Khadija WAHHABI (P21)</div>
+    </div>
+
+    <div class="main-content">
+        
+        <div id="default-view">
+            
+            <div class="intro-box">
+                <h2>Welcome to our Visual Search Engine</h2>
+                <p>
+                    This project explores the <strong>CelebA</strong> dataset, containing over 200,000 celebrity images.
+                    The concept is simple: select physical attributes (e.g., <em>Smiling, Eyeglasses, Hat...</em>) 
+                    and choose the number of images to retrieve (up to 50). Our Artificial Intelligence model will 
+                    instantly find the most corresponding faces in the database.
+                </p>
+            </div>
+
+            <h2 class="section-title">Dataset Content Examples</h2>
+            <div class="gallery">
+                {% for sample in samples %}
+                <div class="photo">
+                    <img src="{{ url_for('serve_images', filename=sample.filename) }}">
+                    <div class="attr" title="{{ sample.attrs }}">{{ sample.attrs }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="results-view" style="display: none;">
+            
+            <h2 id="query-title" class="query-header">Search Results</h2>
+            
+            <div class="disclaimer-box">
+                <h3>! DISCLAIMER !</h3>
+                <ul class="pink-stars">
+                    <li><strong>Model Imperfections:</strong> Our AI is not perfect and can make mistakes. Factors such as lighting, image quality, or the angle of the face can influence detection.</li>
+                    <li><strong>Data Subjectivity:</strong> The original labels provided by CelebA were annotated by humans. An image might visually appear to match your query but display "Match: 0/4" simply because the original human annotator did not label it that way. Traits like "Rosy Cheeks" vs "Makeup", or "Black Hair" vs "Brown Hair" can be very subjective.</li>
+                    <li><strong>Conflicting Queries:</strong> If you request contradictory attributes (e.g., <em>"Black Hair" AND "Blond Hair"</em>, or <em>"Mustache" AND "Wearing Lipstick"</em>), the results may look strange or inaccurate, as such combinations rarely exist in the dataset.</li>
+                </ul>
+            </div>
+
+            <div id="loading" style="display:none; text-align:center; color:#666; margin:20px 0;">
+                Scanning 200k images...
+            </div>
+
+            <div class="gallery" id="results-grid"></div>
+            
+            <div style="text-align:center; margin-top:30px;">
+                <button onclick="resetGallery()" class="back-btn">Back to Samples</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="control-panel">
+        <h3 style="text-align:center; color:#333; margin-top:0;">Select 1 to 40 Attributes</h3>
+        
+        <div class="attributes-grid">
+            {% for attr in attributes %}
+            <div class="attr-tag" onclick="toggleAttr(this)" data-value="{{ attr }}">
+                {{ attr.replace('_', ' ') }}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center; margin-top: 25px; margin-bottom: 15px;">
+            <label for="k-slider" style="font-weight: bold; color: #444; margin-right: 10px;">
+                Number of results: <span id="k-value" style="color: #e64980; font-size: 1.2em;">5</span>
+            </label>
+            <input type="range" id="k-slider" min="5" max="50" step="5" value="5" 
+                   style="vertical-align: middle; cursor: pointer; accent-color: #e64980;"
+                   oninput="document.getElementById('k-value').innerText = this.value">
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="search-btn" onclick="searchImages()">LAUNCH SEARCH</button>
+            <p id="error-msg"></p>
+        </div>
+    </div>
+
+    <script>
+        function toggleAttr(element) {
+            element.classList.toggle('active');
+            hideError();
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('error-msg');
+            el.innerText = msg;
+            el.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error-msg').style.display = 'none';
+        }
+
+        function resetGallery() {
+            document.getElementById('results-view').style.display = 'none';
+            document.getElementById('default-view').style.display = 'block';
+            document.getElementById('results-grid').innerHTML = ''; 
+            document.getElementById('query-title').innerText = "Search Results";
+        }
+
+        async function searchImages() {
+            const activeElements = document.querySelectorAll('.attr-tag.active');
+            const selectedAttrs = Array.from(activeElements).map(el => el.getAttribute('data-value'));
+            const kValue = document.getElementById('k-slider').value;
+
+            if (selectedAttrs.length === 0) {
+                showError("Please select at least 1 attribute.");
+                return;
+            }
+
+            // Titre dynamique en anglais
+            const attrString = selectedAttrs.map(a => a.replace(/_/g, ' ')).join(', ');
+            document.getElementById('query-title').innerHTML = 
+                `Top ${kValue} images corresponding to: <span style="color:#e64980">${attrString}</span>`;
+
+            document.getElementById('default-view').style.display = 'none';
+            document.getElementById('results-view').style.display = 'block';
+            document.getElementById('loading').style.display = 'block';
+            
+            const grid = document.getElementById('results-grid');
+            grid.innerHTML = '';
+
+            try {
+                const response = await fetch('/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ attributes: selectedAttrs, k: kValue })
+                });
+
+                const results = await response.json();
+                document.getElementById('loading').style.display = 'none';
+
+                if (results.error) {
+                    showError("Server Error: " + results.error);
+                    return;
+                }
+                
+                if (results.length === 0) {
+                    grid.innerHTML = '<p style="text-align:center; width:100%;">No images found accessible on disk.</p>';
+                    return;
+                }
+
+                results.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'photo photo-result';
+                    
+                    const matchedStr = item.matched && item.matched.length > 0 
+                        ? item.matched.join(', ').replace(/_/g, ' ') 
+                        : "None";
+
+                    card.innerHTML = `
+                        <img src="/images/${item.filename}" alt="${item.filename}">
+                        <div class="attr-detail">
+                            <span style="color:#e64980; font-weight:bold;">Match: ${item.match_count}/${item.total_query}</span><br>
+                            <span style="font-size:10px; color:#555;">Found: ${matchedStr}</span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error(error);
+                showError("Network Error");
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
